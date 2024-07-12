@@ -59,11 +59,12 @@ const products = [
 const ProductList = ({ onDragStart }) => {
   return (
     <div className="product-list">
-    {products.map((product, index) => (
-      <ProductCard key={index} product={product} onDragStart={onDragStart(product.image)} />
-    ))}
-  </div>
+      {products.map((product, index) => (
+        <ProductCard key={index} product={product} onDragStart={onDragStart(product.image)} />
+      ))}
+    </div>
   );
 }
+
 
 export default ProductList;
