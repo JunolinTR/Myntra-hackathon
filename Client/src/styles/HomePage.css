@@ -1,0 +1,26 @@
+.App {
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  .main-content {
+    display: flex;
+  }
+  
+  .content {
+    margin-left: 60px; /* Adjust based on sidebar width */
+    padding: 20px;
+    width: 100%;
+  }
+  
+  .mannequin {
+    margin-bottom: 20px;
+  }
+  
+  .mannequin img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  
