@@ -2,7 +2,7 @@ from segment import segment_clothing, batch_segment_clothing
 from PIL import Image
 
 # Single image segmentation
-image_path = 'images.jpg'
+image_path = 'https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/25685654/2023/10/30/c49dfada-18a5-4189-b080-f4e946d67d1a1698669606431COTLANDFASHIONPinkGeometricPrintCottonTop1.jpg'
 output_path = 'segmented.png'
 
 img = Image.open(image_path)
