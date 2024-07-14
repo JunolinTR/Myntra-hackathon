@@ -11,6 +11,8 @@ const HomePage = () => {
   const [showMannequin, setShowMannequin] = useState(false);
   const [dressImages, setDressImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  // const [topImage, setTopImage] = useState(null);
+  // const [bottomImage, setBottomImage] = useState(null);
 
   const imageUrls = {
     Dress: images.Dress,
@@ -44,8 +46,12 @@ const HomePage = () => {
       }
       const data = await response.json();
       const imageUrl = imageUrls[type] || '';
-      console.log(imageUrl) // Get the image URL based on type
-      setDressImages([...dressImages, imageUrl]);
+      // console.log(imageUrl) // Get the image URL based on type
+      if (type === 'Upper-clothes' || type === 'Dress') {
+        setDressImages((prevImages) => [...prevImages, imageUrl]);
+      } else {
+        setDressImages((prevImages) => [...prevImages, imageUrl]);
+      }
     }  catch (error) {
       console.error('Error during segmentation:', error);
     } finally {
@@ -74,13 +80,13 @@ const HomePage = () => {
       <div className="main-content">
         {showSidebar && (
           <Sidebar 
-            onCreate={handleCreate} 
-            onClose={handleToggleSidebar} 
-            showMannequin={showMannequin} 
-            dressImages={dressImages} 
-            onDropImage={handleDropImage} 
-            onRemoveImage={handleRemoveImage}
-            loading={loading}
+          onCreate={handleCreate} 
+          onClose={handleToggleSidebar} 
+          showMannequin={showMannequin} 
+          dressImages={dressImages} 
+          onDropImage={handleDropImage} 
+          onRemoveImage={handleRemoveImage}
+          loading={loading}
           />
         )}
         <div className={`content ${showSidebar ? 'content-shift' : ''}`}>
