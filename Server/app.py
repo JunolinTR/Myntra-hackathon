@@ -1,21 +1,29 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-import requests
-from segment import segment_clothing
-from PIL import Image
-from io import BytesIO
 import os
 from main import process_image
-app = Flask(__name__)
+
+app = Flask(__name__, static_folder='D:/Coding/Myntra/Client/src/output')
 CORS(app)  # This will enable CORS for all routes
+
+# Route to serve static files from the output directory
+@app.route('/output/<path:filename>')
+def serve_file(filename):
+    return send_from_directory(app.static_folder, filename)
 
 @app.route('/segment', methods=['POST'])
 def segment():
     data = request.get_json()
     image_url = data['image_url']
     cloth_type = data['cloth_type']
-    process_image(image_url,cloth_type)
-    return jsonify({"segmented_image_url": "Myntra/Serveroutput/Uppercloth.png"})
+    output_path = process_image(image_url, cloth_type)
+    if output_path:
+        relative_path = os.path.relpath(output_path, 'D:/Coding/Myntra/Client/src')
+        return jsonify({"segmented_image_url": relative_path})
+    else:
+        return jsonify({"error": "Image processing failed"}), 500
+
+
 #     output_dir = os.path.join("Server", "output")
     
 #     response = requests.get(image_url)

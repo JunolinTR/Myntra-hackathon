@@ -10,7 +10,7 @@ const Sidebar = ({ onCreate, onClose, showMannequin, dressImages, onDropImage, o
     event.preventDefault();
   };
 
-  const handleDrop = (event) => {
+  const handleDrop = async (event) => {
     event.preventDefault();
     const image = event.dataTransfer.getData('image');
     const type = event.dataTransfer.getData('type');
@@ -19,19 +19,33 @@ const Sidebar = ({ onCreate, onClose, showMannequin, dressImages, onDropImage, o
       console.error('Missing image or type data in handleDrop');
       return;
     }
-
-    if (selection === 'Top and Bottom') {
-      if (type === 'Upper-clothes' && !topImage) {
-        setTopImage(image);
-      } else if (type !== 'Upper-clothes') {
-        setBottomImage(image);
-      }
-    } else if (selection === 'Dress') {
-      setTopImage(image);
-      setBottomImage(null);
-    }
-
     onDropImage(image, type);
+    try {
+      const response = await fetch('http://127.0.0.1:5000/segment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ image_url: image, cloth_type: type })
+      });
+
+      const result = await response.json();
+      const segmentedImageUrl = `http://127.0.0.1:5000/${result.segmented_image_url}`;
+
+      if (selection === 'Top and Bottom') {
+        if (type === 'Upper-clothes' && !topImage) {
+          setTopImage(segmentedImageUrl);
+        } else if (type !== 'Upper-clothes') {
+          setBottomImage(segmentedImageUrl);
+        }
+      } else if (selection === 'Dress') {
+        setTopImage(segmentedImageUrl);
+        setBottomImage(null);
+      }
+
+    } catch (error) {
+      console.error('Error processing image:', error);
+    }
   };
 
   const handleSelectionChange = (event) => {
