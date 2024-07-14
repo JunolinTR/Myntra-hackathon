@@ -4,11 +4,22 @@ import ProductList from './ProductList';
 import Sidebar from './Sidebar';
 import { GoChevronLeft } from "react-icons/go";
 import '../styles/HomePage.css';
+import images from '../images';
 
 const HomePage = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [showMannequin, setShowMannequin] = useState(false);
   const [dressImages, setDressImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const imageUrls = {
+    Dress: images.Dress,
+    Pants: images.pants,
+    Skirt: images.Skirt,
+    'Upper-clothes': images.Uppercloth,
+  };
+
+
   
   const handleCreate = () => {
     setShowMannequin(!showMannequin);
@@ -18,15 +29,28 @@ const HomePage = () => {
     setShowSidebar(!showSidebar);
   };
 
-  const handleDropImage = (image) => {
-    let updatedImages = [...dressImages];
-    if (updatedImages.length >= 2) {
-      updatedImages[0] = updatedImages[1];
-      updatedImages[1] = image;
-    } else {
-      updatedImages.push(image);
+  const handleDropImage = async (image, type) => {
+    setLoading(true); // Start loading
+    try {
+      const response = await fetch('http://localhost:5000/segment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ image_url: image, cloth_type: type }),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      const imageUrl = imageUrls[type] || '';
+      console.log(imageUrl) // Get the image URL based on type
+      setDressImages([...dressImages, imageUrl]);
+    }  catch (error) {
+      console.error('Error during segmentation:', error);
+    } finally {
+      setLoading(false); // End loading
     }
-    setDressImages(updatedImages);
   };
 
   const handleRemoveImage = (index) => {
@@ -34,10 +58,11 @@ const HomePage = () => {
     setDressImages(updatedImages);
   };
 
-  const handleDragStart = (image) => (event) => {
+  const handleDragStart = (image, type) => (event) => {
+   
     event.dataTransfer.setData('image', image);
+    event.dataTransfer.setData('type', type);
   };
-
   return (
     <div>
       <Navbar />
@@ -55,6 +80,7 @@ const HomePage = () => {
             dressImages={dressImages} 
             onDropImage={handleDropImage} 
             onRemoveImage={handleRemoveImage}
+            loading={loading}
           />
         )}
         <div className={`content ${showSidebar ? 'content-shift' : ''}`}>
