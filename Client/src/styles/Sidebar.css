@@ -1,7 +1,8 @@
 .sidebar {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
+  bottom:0;
   width: 300px;
   height: 100%;
   background-color: #f0f0f0;
@@ -16,12 +17,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  
 }
 
 .dress-container {
   position: relative;
-  margin-bottom: 10px;
+  
 }
 
 
