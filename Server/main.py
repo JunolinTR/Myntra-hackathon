@@ -7,6 +7,10 @@ import os
 def process_image(url, cloth_type):
     image_url = url
     output_dir = "D:/Coding/Myntra/Client/src/output"
+    if cloth_type=="Shoe":
+        type=["Left-shoe", "Right-shoe"]
+    else:
+        type=cloth_type
 
     # Download the image
     response = requests.get(image_url)
@@ -15,7 +19,7 @@ def process_image(url, cloth_type):
         image = Image.open(BytesIO(response.content))
         
         # Perform segmentation
-        result = segment_clothing(img=image, clothes=cloth_type)
+        result = segment_clothing(img=image, clothes=type)
         
         # Ensure output directory exists
         os.makedirs(output_dir, exist_ok=True)

@@ -5,6 +5,8 @@ const Sidebar = ({ onCreate, onClose, showMannequin, dressImages, onDropImage, o
   const [selection, setSelection] = useState('');
   const [topImage, setTopImage] = useState(null);
   const [bottomImage, setBottomImage] = useState(null);
+  const [hatImage, setHatImage] = useState(null);
+  const [shoeImage, setShoeImage] = useState(null);
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -32,15 +34,23 @@ const Sidebar = ({ onCreate, onClose, showMannequin, dressImages, onDropImage, o
       const result = await response.json();
       const segmentedImageUrl = `http://127.0.0.1:5000/${result.segmented_image_url}`;
 
-      if (selection === 'Top and Bottom') {
-        if (type === 'Upper-clothes' && !topImage) {
+      switch (type) {
+        case 'Upper-clothes':
+        case 'Dress':
           setTopImage(segmentedImageUrl);
-        } else if (type !== 'Upper-clothes') {
+          break;
+        case 'Pants':
+        case 'Skirt':
           setBottomImage(segmentedImageUrl);
-        }
-      } else if (selection === 'Dress') {
-        setTopImage(segmentedImageUrl);
-        setBottomImage(null);
+          break;
+        case 'Hat':
+          setHatImage(segmentedImageUrl);
+          break;
+        case 'Shoe':
+          setShoeImage(segmentedImageUrl);
+          break;
+        default:
+          console.error(`Unknown type: ${type}`);
       }
 
     } catch (error) {
@@ -55,15 +65,24 @@ const Sidebar = ({ onCreate, onClose, showMannequin, dressImages, onDropImage, o
   return (
     <div className="sidebar" onDragOver={handleDragOver} onDrop={handleDrop}>
       <button className="close-button" onClick={onClose}>×</button>
+      
       <button className="create-button" onClick={onCreate}>Create +</button>
       {loading && <div className="loading-spinner">Loading...</div>}
-      <select onChange={handleSelectionChange} value={selection}>
+      
+      {showMannequin && (
+        <div className="mannequin">
+          {/* <select onChange={handleSelectionChange} value={selection}>
         <option value="">Select Option</option>
         <option value="Top and Bottom">Top and Bottom</option>
         <option value="Dress">Dress</option>
-      </select>
-      {showMannequin && (
-        <div className="mannequin">
+      </select> */}
+            {hatImage && (
+            <div className="dress-container">
+              <img src={hatImage} alt="Hat" className="dress-overlay" />
+              <button className="remove-button" onClick={() => setHatImage(null)}>Remove</button>
+            </div>
+          )}
+
           {topImage && (
             <div className="dress-container">
               <img src={topImage} alt="Top" className="dress-overlay" />
@@ -74,6 +93,12 @@ const Sidebar = ({ onCreate, onClose, showMannequin, dressImages, onDropImage, o
             <div className="dress-container">
               <img src={bottomImage} alt="Bottom" className="dress-overlay" />
               <button className="remove-button" onClick={() => setBottomImage(null)}>Remove</button>
+            </div>
+          )}
+          {shoeImage && (
+            <div className="dress-container">
+              <img src={shoeImage} alt="Shoes" className="dress-overlay" />
+              <button className="remove-button" onClick={() => setShoeImage(null)}>Remove</button>
             </div>
           )}
         </div>

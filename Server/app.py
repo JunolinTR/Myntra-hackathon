@@ -23,6 +23,7 @@ def segment():
     else:
         return jsonify({"error": "Image processing failed"}), 500
 
+["Hat", "Upper-clothes", "Skirt", "Pants", "Dress", "Belt", "Left-shoe", "Right-shoe", "Scarf"]
 
 #     output_dir = os.path.join("Server", "output")
     
